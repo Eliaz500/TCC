@@ -51,6 +51,7 @@ targets = ['Abaixo da média','Média','Acima da média']
 map_to_int = {name: n for n, name in enumerate(targets)}
 copia_dados_escola["Classe-IDEB"] = copia_dados_escola["Classe-IDEB"].replace(map_to_int)
 print(targets)
+
 # Exibe o DataFrame atualizado
 dados_escola = copia_dados_escola
 print(dados_escola)
@@ -66,6 +67,27 @@ dados_escola.to_csv("Base de Dados/Base Pre Processada/base_tratada.csv")
 ####2.2 Importa Biblioteca
 from pycaret.classification import *
 from pycaret import classification
+
+####2.3 Carrega a base
+dados_escola = pd.read_csv("Base de Dados/Base Pre Processada/base_tratada.csv")
+
+####2.4 Remove Coluna "Unnamed: 0"
+if "Unnamed: 0" in dados_escola.columns:
+    dados_escola.drop(columns=["Unnamed: 0"], inplace=True)
+
+####2.5 Configura o ambiente
+clf = setup(data=dados_escola, target='Classe-IDEB', session_id=1)
+
+####2.6 Compara os modelos
+best_model = compare_models()
+print(best_model)
+
+####2.9 Criando o Modelo (Extra Trees Classifier)
+classification_et = classification.create_model('et')
+
+classification.plot_model(classification_et, plot = 'feature', scale= 1)
+
+classification.evaluate_model(classification_et)
 
 
 
